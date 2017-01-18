@@ -53,6 +53,32 @@ Window {
 
         }
 
+        //Rectangle{
+           // width: parent.width
+           // height: 100
+
+            Column{
+                Row{
+                    Text {
+                        text: qsTr("Start number:")
+                    }
+                    TextEdit{
+                        id: startNum
+                        text: "0"
+                    }
+                }
+                Row{
+                    Text {
+                        text: qsTr("Numbers:")
+                    }
+                    TextEdit{
+                        id: numbersQty
+                        text: "10"
+                    }
+                }
+            }
+        //}
+
         Button {
             id: addlinebtn
             width: buttonWidth
@@ -60,7 +86,12 @@ Window {
             text: qsTr("Add line")
             enabled: false
             onClicked: {
-                console.log(myFile.read());
+                //console.log(myFile.read());
+//                var numbers = parseInt(numbersQty.text, 10)
+//                var startnum = parseInt(startNum.text, 10)
+
+
+
             }
 
 
