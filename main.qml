@@ -1,102 +1,96 @@
 import QtQuick 2.6
 import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
-import QtQuick.Controls 2.0
+import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import FileIO 1.0
 
 
 Window {
     visible: true
-    //    width: 640
-    //    height: 480
-    title: qsTr("Hello World")
+    width: 300
+    height: 280
+    title: qsTr("LineNum Adder 0.99")
 
     property int buttonWidth: 150
     property int buttonHeight: 40
     property int buttonRadius: buttonHeight/4
 
+
+    FileDialog {
+        id: fileDialogLoad
+        folder: "."
+        title: "Choose a file to open"
+        selectMultiple: false
+        nameFilters: [ "Text files (*.txt)", "All files (*)" ]
+        onAccepted: {
+            console.log("Accepted: " + fileDialogLoad.fileUrl)
+            myFile.source = fileUrl;
+            lastLineSpb.value = myFile.getLastLineNum();
+            addlinebtn.enabled = true;
+        }
+        onRejected: {
+            addlinebtn.enabled = false;
+        }
+    }
+
+    FileIO {
+        id: myFile
+//        source: fileDialogLoad.fileUrl
+        onError: console.log(msg)
+    }
+
     Column{
         spacing: 10
         padding: 10
 
-        FileDialog {
-            id: fileDialogLoad
-            folder: "."
-            title: "Choose a file to open"
-            selectMultiple: false
-            nameFilters: [ "Text files (*.txt)", "All files (*)" ]
-            onAccepted: {
-                console.log("Accepted: " + fileDialogLoad.fileUrl)
-                addlinebtn.enabled = true;
-            }
-            onRejected: {
-                addlinebtn.enabled = false;
-            }
-        }
-
-        FileIO {
-            id: myFile
-            source: fileDialogLoad.fileUrl
-            onError: console.log(msg)
-        }
-
         Button {
-            width: buttonWidth
-            height: buttonHeight
             text: qsTr("Chose file")
-
-            onClicked: {
-                fileDialogLoad.open();
-            }
-
-
+            anchors.horizontalCenter: parent.horizontalCenter
+            onClicked: fileDialogLoad.open();
         }
 
-        //Rectangle{
-           // width: parent.width
-           // height: 100
+        Text{
+            text: fileDialogLoad.fileUrl
+        }
 
-            Column{
-                Row{
-                    Text {
-                        text: qsTr("Start number:")
-                    }
-                    TextEdit{
-                        id: startNum
-                        text: "0"
-                    }
-                }
-                Row{
-                    Text {
-                        text: qsTr("Numbers:")
-                    }
-                    TextEdit{
-                        id: numbersQty
-                        text: "10"
-                    }
-                }
+        Grid{
+            columns: 2
+            spacing: 10
+
+            Text {
+                text: qsTr("Last line:")
             }
-        //}
+            SpinBox{
+                id: lastLineSpb
+                value: 0
+                maximumValue: 10000000
+            }
+            Text {
+                text: qsTr("Lines to add:")
+            }
+            SpinBox{
+                id: lineToAddSpb
+                value: 10
+            }
+        }
 
         Button {
             id: addlinebtn
-            width: buttonWidth
-            height: buttonHeight
+
+            anchors.horizontalCenter: parent.horizontalCenter
             text: qsTr("Add line")
+
             enabled: false
             onClicked: {
-                //console.log(myFile.read());
-//                var numbers = parseInt(numbersQty.text, 10)
-//                var startnum = parseInt(startNum.text, 10)
-
-
-
+                console.log("Last line: " + lastLineSpb.value);
+                console.log("Lines to add: " + lineToAddSpb.value);
+                var startLine = lastLineSpb.value + 1
+                var lastLine = startLine + lineToAddSpb.value;
+                for(var i = startLine; i <= lastLine; i++)
+                    myFile.write("\r\n"+i+".");
+                lastLineSpb.value = lastLine;
             }
-
-
         }
-
-
     }
 }

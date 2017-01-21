@@ -9,25 +9,21 @@ class FileIO : public QObject
     Q_OBJECT
 
 public:
+    explicit FileIO(QObject * parent = 0);
+
     Q_PROPERTY(QUrl source
                READ source
                WRITE setSource
                NOTIFY sourceChanged)
-    explicit FileIO(QObject * parent = 0);
 
-    Q_INVOKABLE QString read();
-    Q_INVOKABLE bool write(const QString & data);
 
-    QUrl source()
-    {
-        return mSource;
-    }
+    QUrl source();
 
 public slots:
-    void setSource(const QUrl & source)
-    {
-        mSource = source;
-    }
+    QString read();
+    bool write(const QString & data);
+    void setSource(const QUrl & source);
+    int getLastLineNum();
 
 signals:
     void sourceChanged(const QUrl & source);
