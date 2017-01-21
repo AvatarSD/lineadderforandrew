@@ -99,7 +99,7 @@ Window {
                 var startLine = lastLineSpb.value + 1
                 var lastLine = startLine + lineToAddSpb.value;
                 for(; startLine < lastLine; startLine++)
-                    myFile.write("\r\n"+startLine+".");
+                    myFile.write("\n"+startLine+".");
                 lastLineSpb.value = startLine-1;
                 resultTextBox.text = "OK";
             }
