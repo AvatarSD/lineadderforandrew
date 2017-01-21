@@ -8,8 +8,10 @@ import FileIO 1.0
 
 Window {
     visible: true
-    width: 300
-    height: 280
+    //    width: 300
+    //    height: 280
+    width: mainColumn.width
+    height:  mainColumn.height
     title: qsTr("LineNum Adder 0.99")
 
     property int buttonWidth: 150
@@ -36,18 +38,29 @@ Window {
 
     FileIO {
         id: myFile
-//        source: fileDialogLoad.fileUrl
         onError: console.log(msg)
     }
 
+    Rectangle{
+        id: backgroundRect
+        anchors.fill: parent
+        z:-1
+        color: "lightGray"
+    }
+
     Column{
+        id: mainColumn
         spacing: 10
         padding: 10
+
 
         Button {
             text: qsTr("Chose file")
             anchors.horizontalCenter: parent.horizontalCenter
-            onClicked: fileDialogLoad.open();
+            onClicked: {
+                fileDialogLoad.open();
+                resultTextBox.text = "";
+            }
         }
 
         Text{
@@ -57,6 +70,7 @@ Window {
         Grid{
             columns: 2
             spacing: 10
+            verticalItemAlignment: Grid.AlignVCenter
 
             Text {
                 text: qsTr("Last line:")
@@ -72,6 +86,7 @@ Window {
             SpinBox{
                 id: lineToAddSpb
                 value: 10
+                width: lastLineSpb.width
             }
         }
 
@@ -87,10 +102,20 @@ Window {
                 console.log("Lines to add: " + lineToAddSpb.value);
                 var startLine = lastLineSpb.value + 1
                 var lastLine = startLine + lineToAddSpb.value;
-                for(var i = startLine; i <= lastLine; i++)
-                    myFile.write("\r\n"+i+".");
-                lastLineSpb.value = lastLine;
+                for(; startLine < lastLine; startLine++)
+                    myFile.write("\r\n"+startLine+".");
+                lastLineSpb.value = startLine-1;
+                resultTextBox.text = "OK";
             }
+        }
+
+        Text {
+            id: resultTextBox
+            text: ""
+            font.family: "Helvetica"
+            font.pointSize: 24
+            color: "green"
+            anchors.horizontalCenter: parent.horizontalCenter
         }
     }
 }
